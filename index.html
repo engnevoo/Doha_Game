@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doha Smart-City Quest | Live Simulation & Timer Edition</title>
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-light: #6366f1;
+            --accent: #059669;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .timer-container {
+            background: #e2e8f0;
+            border-radius: 6px;
+            height: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .timer-bar {
+            background: var(--accent);
+            height: 100%;
+            width: 100%;
+            transition: width 1s linear;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+        .card.active {
+            display: block;
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: var(--primary-light);
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: #f1f5f9;
+            color: var(--text);
+            border: 2px solid #cbd5e1;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .option-btn:hover {
+            background: #e2e8f0;
+            border-color: var(--primary-light);
+        }
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .simulation-terminal {
+            background: #0f172a;
+            color: #38bdf8;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            min-height: 140px;
+            border: 2px solid #334155;
+            position: relative;
+        }
+        .terminal-header {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        input[type="text"] {
+            padding: 6px;
+            font-size: 0.9rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            width: 55px;
+            text-align: center;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .correct { background: #dcfce7; color: #166534; }
+        .incorrect { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Doha Smart-City Quest</h1>
+        <p>Live Code Simulation & Timed Revision Challenge | QSTSD</p>
+    </header>
+
+    <div class="dashboard-stats">
+        <div>Station: <span id="current-station">1</span> / 4</div>
+        <div>Score: <span id="score">0</span> Points</div>
+        <div>Time Left: <span id="time-left">45</span>s</div>
+    </div>
+
+    <div class="timer-container">
+        <div id="timer-bar" class="timer-bar"></div>
+    </div>
+
+    <!-- STAGE 1: Hamad Airport -->
+    <div id="stage-1" class="card active">
+        <h2>✈️ Station 1: Hamad Airport Baggage Control</h2>
+        <div class="grid-layout">
+            <div>
+                <p>A check-in program must capture a numeric input from passengers to calculate luggage weight limits[cite: 1].</p>
+                <p><strong>Question:</strong> Which operation captures a numeric input?</p>
+                <button class="option-btn" onclick="checkMCQ(1, 'A', false)">A. TextWindow.Read()</button>
+                <button class="option-btn" onclick="checkMCQ(1, 'B', true)">B. TextWindow.ReadNumber()</button>
+                <button class="option-btn" onclick="checkMCQ(1, 'C', false)">C. TextWindow.Write()</button>
+            </div>
+            <div>
+                <div class="simulation-terminal">
+                    <div class="terminal-header">Live Simulation Output</div>
+                    <div id="sim-1">
+                        > Initializing Check-In Kiosk...<br>
+                        > Waiting for passenger bags input...<br>
+                        <span style="color: #facc15;">? Select correct method to read number.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="feedback-1"></div>
+    </div>
+
+    <!-- STAGE 2: Doha Metro -->
+    <div id="stage-2" class="card">
+        <h2>🚇 Station 2: Doha Metro Helper</h2>
+        <div class="grid-layout">
+            <div>
+                <p>Complete the missing code to classify journey lengths based on stops[cite: 1]:</p>
+                <pre>TextWindow.<input type="text" id="blank-1" placeholder="(1)"> = "Metro"
+stops = TextWindow.<input type="text" id="blank-2" placeholder="(2)">()
+If stops > 10 <input type="text" id="blank-3" placeholder="(3)">
+    TextWindow.WriteLine("Long")
+<input type="text" id="blank-4" placeholder="(4)">
+    TextWindow.WriteLine("Short")
+<input type="text" id="blank-5" placeholder="(5)">
+                </pre>
+                <button onclick="checkMetroCode()">Submit Code</button>
+            </div>
+            <div>
+                <div class="simulation-terminal">
+                    <div class="terminal-header">Metro Kiosk Simulator</div>
+                    <div id="sim-2">
+                        > Enter stops count...<br>
+                        > Evaluating If...Else branch...<br>
+                        <span style="color: #facc15;">Complete keywords: Title, ReadNumber, Then, Else, EndIf[cite: 1].</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="feedback-2"></div>
+    </div>
+
+    <!-- STAGE 3: Lusail Stadium -->
+    <div id="stage-3" class="card">
+        <h2>⚽ Station 3: Lusail Stadium Seat Generator</h2>
+        <div class="grid-layout">
+            <div>
+                <p>Fill in the loop to print gates 1 to 8 efficiently[cite: 1]:</p>
+                <pre>For gate = 1 <input type="text" id="loop-1" placeholder="(6)"> 8
+    TextWindow.WriteLine("Gate " + <input type="text" id="loop-2" placeholder="(7)">)
+<input type="text" id="loop-3" placeholder="(8)">
+                </pre>
+                <button onclick="checkLoopCode()">Submit Loop</button>
+            </div>
+            <div>
+                <div class="simulation-terminal">
+                    <div class="terminal-header">Stadium Printer Simulator</div>
+                    <div id="sim-3">
+                        > Initializing For loop...<br>
+                        > Iterating gate numbers...<br>
+                        <span style="color: #facc15;">Fill in: To, gate, EndFor[cite: 1].</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="feedback-3"></div>
+    </div>
+
+    <!-- STAGE 4: Souq Waqif Karak Stall -->
+    <div id="stage-4" class="card">
+        <h2>☕ Station 4: Souq Waqif Karak Stall</h2>
+        <div class="grid-layout">
+            <div>
+                <pre>price = 4
+For i = 1 To 3
+    TextWindow.WriteLine(i + " karak = " + (i * price) + " QR")
+EndFor</pre>
+                <p><strong>Question:</strong> Select the correct simulation trace output[cite: 1].</p>
+                <button class="option-btn" onclick="checkTrace(false)">A. 1 karak = 4 QR twice</button>
+                <button class="option-btn" onclick="checkTrace(true)">B. 1 karak=4 QR, 2 karak=8 QR, 3 karak=12 QR</button>
+                <button class="option-btn" onclick="checkTrace(false)">C. Syntax Error</button>
+            </div>
+            <div>
+                <div class="simulation-terminal">
+                    <div class="terminal-header">Karak POS Terminal</div>
+                    <div id="sim-4">
+                        > Running loop calculation...<br>
+                        > i=1, 2, 3 multiplied by price (4)...<br>
+                        <span style="color: #facc15;">Select expected output trace[cite: 1].</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="feedback-4"></div>
+    </div>
+
+    <!-- COMPLETE SCREEN -->
+    <div id="stage-complete" class="card" style="text-align: center;">
+        <h2>🎉 Mission Accomplished!</h2>
+        <p>You completed the Doha Smart-City Quest simulation game!</p>
+        <h3 id="final-score">Your Score: 0 / 40</h3>
+        <button onclick="location.reload()">Play Again</button>
+    </div>
+
+</div>
+
+<script>
+    let score = 0;
+    let currentStage = 1;
+    let timeLeft = 45;
+    let timerInterval;
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 45;
+        document.getElementById('time-left').innerText = timeLeft;
+        document.getElementById('timer-bar').style.width = '100%';
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('time-left').innerText = timeLeft;
+            let percentage = (timeLeft / 45) * 100;
+            document.getElementById('timer-bar').style.width = percentage + '%';
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeOut();
+            }
+        }, 1000);
+    }
+
+    function handleTimeOut() {
+        if (currentStage === 1) {
+            document.getElementById('feedback-1').className = "feedback incorrect";
+            document.getElementById('feedback-1').innerText = "Time's up! Moving to next station.";
+            setTimeout(() => transitionToStage(2), 1500);
+        } else if (currentStage === 2) {
+            document.getElementById('feedback-2').className = "feedback incorrect";
+            document.getElementById('feedback-2').innerText = "Time's up! Moving to next station.";
+            setTimeout(() => transitionToStage(3), 1500);
+        } else if (currentStage === 3) {
+            document.getElementById('feedback-3').className = "feedback incorrect";
+            document.getElementById('feedback-3').innerText = "Time's up! Moving to next station.";
+            setTimeout(() => transitionToStage(4), 1500);
+        } else if (currentStage === 4) {
+            showComplete();
+        }
+    }
+
+    function checkMCQ(stage, option, isCorrect) {
+        clearInterval(timerInterval);
+        const feedback = document.getElementById(`feedback-${stage}`);
+        const sim = document.getElementById(`sim-${stage}`);
+        if (isCorrect) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Correct! Simulation verified.";
+            sim.innerHTML = `> Executing TextWindow.ReadNumber()...<br><span style="color: #4ade80;">✔ Success: Numeric input captured![cite: 1]</span>`;
+            score += 10;
+            setTimeout(() => transitionToStage(2), 1500);
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Incorrect method chosen.";
+            sim.innerHTML = `<span style="color: #f87171;">✖ Error: Expected ReadNumber()[cite: 1]</span>`;
+        }
+    }
+
+    function checkMetroCode() {
+        const b1 = document.getElementById('blank-1').value.trim().toLowerCase();
+        const b2 = document.getElementById('blank-2').value.trim().toLowerCase();
+        const b3 = document.getElementById('blank-3').value.trim().toLowerCase();
+        const b4 = document.getElementById('blank-4').value.trim().toLowerCase();
+        const b5 = document.getElementById('blank-5').value.trim().toLowerCase();
+        const feedback = document.getElementById('feedback-2');
+        const sim = document.getElementById('sim-2');
+
+        if (b1 === 'title' && b2 === 'readnumber' && b3 === 'then' && b4 === 'else' && b5 === 'endif') {
+            clearInterval(timerInterval);
+            feedback.className = "feedback correct";
+            feedback.innerText = "Fantastic! Simulation running smoothly.";
+            sim.innerHTML = `> Metro Helper Initialized[cite: 1]<br>> Stops > 10 evaluated<br><span style="color: #4ade80;">✔ Long / Short journey classified![cite: 1]</span>`;
+            score += 10;
+            setTimeout(() => transitionToStage(3), 1500);
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Check your keywords (Title, ReadNumber, Then, Else, EndIf)[cite: 1].";
+            sim.innerHTML = `<span style="color: #f87171;">✖ Syntax Error in conditional block[cite: 1]</span>`;
+        }
+    }
+
+    function checkLoopCode() {
+        const l1 = document.getElementById('loop-1').value.trim().toLowerCase();
+        const l2 = document.getElementById('loop-2').value.trim().toLowerCase();
+        const l3 = document.getElementById('loop-3').value.trim().toLowerCase();
+        const feedback = document.getElementById('feedback-3');
+        const sim = document.getElementById('sim-3');
+
+        if (l1 === 'to' && l2 === 'gate' && l3 === 'endfor') {
+            clearInterval(timerInterval);
+            feedback.className = "feedback correct";
+            feedback.innerText = "Loop executed successfully!";
+            sim.innerHTML = `> Printing Boarding gate 1 to 8...<br><span style="color: #4ade80;">✔ All 8 seat labels generated![cite: 1]</span>`;
+            score += 10;
+            setTimeout(() => transitionToStage(4), 1500);
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Check loop syntax ('To', variable, 'EndFor')[cite: 1].";
+            sim.innerHTML = `<span style="color: #f87171;">✖ Loop iteration failed[cite: 1]</span>`;
+        }
+    }
+
+    function checkTrace(isCorrect) {
+        clearInterval(timerInterval);
+        const feedback = document.getElementById('feedback-4');
+        const sim = document.getElementById('sim-4');
+        if (isCorrect) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Correct trace output!";
+            sim.innerHTML = `> 1 karak = 4 QR[cite: 1]<br>> 2 karak = 8 QR[cite: 1]<br>> 3 karak = 12 QR[cite: 1]<br><span style="color: #4ade80;">✔ Simulation Complete!</span>`;
+            score += 10;
+            setTimeout(() => showComplete(), 1500);
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerText = "Incorrect trace calculation.";
+            sim.innerHTML = `<span style="color: #f87171;">✖ Trace output mismatch[cite: 1]</span>`;
+        }
+    }
+
+    function transitionToStage(nextStage) {
+        currentStage = nextStage;
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        if (nextStage === 2) {
+            document.getElementById('stage-2').classList.add('active');
+            document.getElementById('current-station').innerText = 2;
+            startTimer();
+        } else if (nextStage === 3) {
+            document.getElementById('stage-3').classList.add('active');
+            document.getElementById('current-station').innerText = 3;
+            startTimer();
+        } else if (nextStage === 4) {
+            document.getElementById('stage-4').classList.add('active');
+            document.getElementById('current-station').innerText = 4;
+            startTimer();
+        }
+    }
+
+    function showComplete() {
+        clearInterval(timerInterval);
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.getElementById('stage-complete').classList.add('active');
+        document.getElementById('final-score').innerText = `Your Score: ${score} / 40`;
+    }
+
+    // Initialize first timer on load
+    startTimer();
+</script>
+
+</body>
+</html>
